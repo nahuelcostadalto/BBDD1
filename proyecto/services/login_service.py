@@ -1,0 +1,20 @@
+from connection import DatabaseConnection
+def registrar_usuario(correo,contraseña):
+    query="""INSERT INTO login (correo,contraseña) VALUES (%s,%s)"""
+    values=(correo,contraseña)
+    
+    with DatabaseConnection() as connection:
+        cursor=connection.cursor()
+        cursor.execute(query,values)
+        connection.commit()
+
+def autenticacion_de_usuario(correo,contraseña):
+    query="""SELECT * FROM login WHERE correo=%s AND contraseña=%s"""
+    values=(correo,contraseña)
+    
+    with DatabaseConnection() as connection:
+        cursor=connection.cursor()
+        cursor.execute(query,values)
+        result = cursor.fetchone() #Nos devuelve una tupla con los datos del usuario
+    return result is not None #Si el usuario no es None, entonces el usuario existe en la base de datos
+    
