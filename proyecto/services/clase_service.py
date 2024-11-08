@@ -64,7 +64,7 @@ def eliminar_clase(id_clase):
         cursor.execute(query, values)
         connection.commit()
 
-#falta crear el eliminar instructor de la clase.
+
 def quitar_instructor_de_clase(id_clase, ci_instructor):
     query = """
         DELETE FROM clase
