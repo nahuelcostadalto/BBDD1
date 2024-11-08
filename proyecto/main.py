@@ -23,6 +23,8 @@ from services.clase_service import asignar_clase, agregar_alumno_a_clase, quitar
 from services.instructor_service import agregar_instructor, eliminar_instructor, modificar_instructor
 from services.login_service import registrar_usuario, autenticacion_de_usuario
 from services.actividades_service import crear_actividad, modificar_actividad, eliminar_actividad
+from services.reportes_services import actividad_con_mas_ingresos, actividad_con_mas_alumnos, turno_con_mas_clases
+
 from dominio.Alumno import Alumno
 from datetime import datetime
 
@@ -138,6 +140,7 @@ def probar_funcionalidades():
             print("Error en la autenticación de usuario.")
     except Exception as e:
         print(f"Error al autenticar usuario: {e}")
+
 
 if __name__ == "__main__":
     probar_funcionalidades()
