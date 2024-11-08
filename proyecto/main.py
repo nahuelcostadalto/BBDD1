@@ -187,21 +187,21 @@ def probar_funcionalidades():
 
 #Esta funcion sacarla de acá y moverla a reportes_services.py y cambiarle el nombre a convertir_timedelta_a_hora , esto sucede porque cuando llamo a turno_con_mas_clases() me devuelve un timedelta y no un string
 #y para que se vea correctamente la hora tengo que convertirlo a string con esta funcion.
-    def convertir_timedelta_a_hora(timedelta_obj):
-        horas = timedelta_obj.seconds // 3600
-        minutos = (timedelta_obj.seconds // 60) % 60
-        return f"{horas:02d}:{minutos:02d}"
-    print("\n--- Pruebas de Reportes ---")
-    try:
-        turno = turno_con_mas_clases()
-        if turno:
-            hora_inicio, hora_fin, total_clases = turno
-            hora_inicio_str = convertir_timedelta_a_hora(hora_inicio)
-            hora_fin_str = convertir_timedelta_a_hora(hora_fin)
-            print(f"Turno con más clases: Inicio {hora_inicio_str}, Fin {hora_fin_str}, Total de clases: {total_clases}")
-        else:
-            print("No se encontró ningún turno con clases.")
-    except Exception as e:
-        print(f"Error al obtener turno con más clases: {e}")
-if __name__ == "__main__":
+    # def convertir_timedelta_a_hora(timedelta_obj):
+    #     horas = timedelta_obj.seconds // 3600
+    #     minutos = (timedelta_obj.seconds // 60) % 60
+    #     return f"{horas:02d}:{minutos:02d}"
+    # print("\n--- Pruebas de Reportes ---")
+    # try:
+    #     turno = turno_con_mas_clases()
+    #     if turno:
+    #         hora_inicio, hora_fin, total_clases = turno
+    #         hora_inicio_str = convertir_timedelta_a_hora(hora_inicio)
+    #         hora_fin_str = convertir_timedelta_a_hora(hora_fin)
+    #         print(f"Turno con más clases: Inicio {hora_inicio_str}, Fin {hora_fin_str}, Total de clases: {total_clases}")
+    #     else:
+    #         print("No se encontró ningún turno con clases.")
+    # except Exception as e:
+    #     print(f"Error al obtener turno con más clases: {e}")
+# if __name__ == "__main__":
     probar_funcionalidades()
