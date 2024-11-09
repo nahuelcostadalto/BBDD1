@@ -1,6 +1,6 @@
 from connection import DatabaseConnection
 # Creo el ABM de actividades (fijarme en la letra si era obligatorio este ABM)
-
+#la id de la actividad es autoincremental, tendríamos que cambiarlo tambien
 def crear_actividad(descripcion, costo, edad_minima):
     query = "INSERT INTO actividades (descripcion, costo, edad_minima) VALUES (%s, %s, %s)"
     values = (descripcion, costo, edad_minima)

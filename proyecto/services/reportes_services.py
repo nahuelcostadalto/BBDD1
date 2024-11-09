@@ -1,5 +1,6 @@
 from connection import DatabaseConnection
-
+from datetime import timedelta
+#le vamos a pasar 3 excels con todos los datos? o solo que devuelva ese valor ?
 def actividad_con_mas_ingresos():
     query = """
         SELECT a.descripcion, SUM(a.costo + IFNULL(e.costo, 0)) AS ingresos
@@ -16,6 +17,7 @@ def actividad_con_mas_ingresos():
         with connection.cursor() as cursor:
             cursor.execute(query)
             return cursor.fetchone()
+#meterle un print con los datos de la tabla en caso de que lo veamos necesario
 
 def actividad_con_mas_alumnos():
     query = """

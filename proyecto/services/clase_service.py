@@ -42,13 +42,13 @@ def quitar_alumno_de_clase(id_clase, ci_alumno):
         cursor = connection.cursor()
         cursor.execute(query, values)
         connection.commit()
-
-def crear_clase(ci_instructor,actividad_id,turno_id,es_grupal):
+##si nos importa si es grupal agregamos el atributo es_grupal , lo pasamos e la query, lo agregamos a valores y a values
+def crear_clase(ci_instructor,actividad_id,turno_id):
     query = """
-        INSERT INTO clase (ci_instructor, id_actividad, id_turno, es_grupal)
-        VALUES (%s, %s, %s, %s)
+        INSERT INTO clase (ci_instructor, id_actividad, id_turno)
+        VALUES (%s, %s, %s)
     """
-    values = (ci_instructor,actividad_id,turno_id,es_grupal)
+    values = (ci_instructor,actividad_id,turno_id)
 
     with DatabaseConnection() as connection:
         cursor = connection.cursor()
@@ -64,7 +64,7 @@ def eliminar_clase(id_clase):
         cursor.execute(query, values)
         connection.commit()
 
-
+#falta crear el eliminar instructor de la clase.
 def quitar_instructor_de_clase(id_clase, ci_instructor):
     query = """
         DELETE FROM clase

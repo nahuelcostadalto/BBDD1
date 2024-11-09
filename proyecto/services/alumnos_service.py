@@ -8,12 +8,22 @@ from utils.validators import validar_email
 #Es decir ya tenemos el ABM de alumnos completo.
 def agregar_alumno(alumno):
 
+    print("aca llegue1")
+#explota acá adentro
+   # alumno = Alumno(ci, nombre, apellido, fecha_nacimiento, telefono, correo_electronico)
+
+    print("aca llegue2")
+
     # Validar correo electrónico
     if not validar_email(alumno.correo_electronico):
         raise ValueError("Correo electrónico inválido")
+    
+    print("aca llegu2e4")
 
     if not alumno.es_mayor_de_edad():
         raise ValueError("El alumno debe ser mayor de edad")
+
+    print("aca llegue3")
 
     query = """
         INSERT INTO alumnos (ci, nombre, apellido, fecha_nacimiento, telefono, correo_electronico)
@@ -27,7 +37,8 @@ def agregar_alumno(alumno):
         alumno.telefono,
         alumno.correo_electronico
     )
- 
+
+    print("llegue a la bd :D:D")  # Debug    
     with DatabaseConnection() as connection:
         with connection.cursor() as cursor:
             cursor.execute(query, values)
