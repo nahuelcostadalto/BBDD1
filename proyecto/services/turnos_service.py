@@ -1,5 +1,5 @@
 import datetime
-from connection import DatabaseConnection
+from proyecto.connection import DatabaseConnection
 #Turnos es autoincremental con el ID en la bbdd, tenemos que cambiarlo , porque sino cada vez que lo vamos a cambiar tenemos que hacerlo manualmente , porque no sabemos
 #a que id corresponde cada turno.
 def crear_turno(hora_inicio,hora_fin):

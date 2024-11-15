@@ -1,4 +1,4 @@
-from connection import DatabaseConnection
+from proyecto.connection import DatabaseConnection
 #Tenemos el ABM de clases completo.
 #asignar_clase, el cual asigna un instructor a una clase.
 #agregar_alumno_a_clase, el cual agrega un alumno a una clase.

@@ -1,4 +1,4 @@
-from connection import DatabaseConnection
+from proyecto.connection import DatabaseConnection
 from datetime import timedelta
 #le vamos a pasar 3 excels con todos los datos? o solo que devuelva ese valor ?
 def actividad_con_mas_ingresos():

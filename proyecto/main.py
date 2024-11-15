@@ -1,10 +1,10 @@
-from flask import Flask, request, jsonify
+
 from flask_cors import CORS
-from services.alumnos_service import agregar_alumno, eliminar_alumno, modificar_alumno
+from services.alumnos_service import agregar_alumno, eliminar_alumno, modificar_alumno, obtener_todos_los_alumnos
 from services.clase_service import asignar_clase, agregar_alumno_a_clase, quitar_alumno_de_clase, eliminar_clase
 from services.login_service import registrar_usuario, autenticacion_de_usuario
-from services.actividades_service import crear_actividad, modificar_actividad, eliminar_actividad
-from services.instructor_service import agregar_instructor, eliminar_instructor, modificar_instructor
+from services.actividades_service import crear_actividad, modificar_actividad, eliminar_actividad, obtener_actividades
+from services.instructor_service import agregar_instructor, eliminar_instructor, modificar_instructor, obtener_instructores
 from services.reportes_services import actividad_con_mas_ingresos, actividad_con_mas_alumnos, turno_con_mas_clases
 from datetime import datetime
 from dominio.Alumno import Alumno
@@ -87,7 +87,31 @@ def eliminar_alumno_route(ci):
         return jsonify({'message': 'Alumno eliminado con éxito'}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 400
+# Ruta para obtener todos los alumnos
+@app.route('/api/alumnos', methods=['GET'])
+def obtener_alumnos_route():
+    try:
+        alumnos = obtener_todos_los_alumnos()
+        return jsonify(alumnos), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
 
+# Ruta para modificar un alumno
+@app.route('/api/alumnos/<ci>', methods=['PUT'])
+def modificar_alumno_route(ci):
+    data = request.get_json()
+    try:
+        datos_nuevos = {
+            "nombre": data.get('nombre'),
+            "apellido": data.get('apellido'),
+            "fecha_nacimiento": data.get('fecha_nacimiento'),
+            "telefono": data.get('telefono'),
+            "correo_electronico": data.get('correo_electronico')
+        }
+        modificar_alumno(ci, datos_nuevos)
+        return jsonify({'message': 'Alumno modificado con éxito'}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
 # Rutas para Actividades
 
 # Ruta para crear actividad
@@ -165,6 +189,15 @@ def modificar_instructor_route(ci):
     except Exception as e:
         return jsonify({'error': str(e)}), 400
 
+# Ruta para obtener todos los instructores
+@app.route('/api/instructores', methods=['GET'])
+def obtener_instructores_route():
+    try:
+        instructores = obtener_instructores()
+        return jsonify(instructores), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+
 # Rutas para Reportes
 
 # Ruta para obtener actividad con más ingresos
@@ -233,6 +266,13 @@ def eliminar_clase_route(id):
     except Exception as e:
         return jsonify({'error': str(e)}), 400
 
+@app.route('/api/actividades', methods=['GET'])
+def obtener_actividades_route():
+    try:
+        actividades = obtener_actividades()
+        return jsonify(actividades), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
 
 
 
