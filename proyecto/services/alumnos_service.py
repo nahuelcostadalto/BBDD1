@@ -2,10 +2,6 @@ from proyecto.connection import DatabaseConnection
 from proyecto.dominio import Alumno
 from proyecto.utils.validators import validar_email
 
-#Tenemos Agregar Alumno, el cual agrega un alumno a la tabla alumnos de la base de datos.
-#Tenemos Eliminar Alumno, el cual elimina un alumno de la tabla alumnos de la base de datos.
-#Tenemos modificar Alumno, el cual modifica los datos de un alumno en la tabla alumnos de la base de datos.
-#Es decir ya tenemos el ABM de alumnos completo.
 def agregar_alumno(alumno):
     # Validar correo electrónico
     if not validar_email(alumno.correo_electronico):
@@ -27,29 +23,21 @@ def agregar_alumno(alumno):
         alumno.correo_electronico
     )
 
-    connection = DatabaseConnection()
-    cursor = connection.cursor()
-    try:
-        cursor.execute(query, values)
-        connection.commit()
-    finally:
-        cursor.close()
-        connection.close()
+    with DatabaseConnection() as connection:
+        with connection.cursor() as cursor:
+            cursor.execute(query, values)
+            connection.commit()
 
 
 def eliminar_alumno(ci):
     query = """DELETE FROM alumnos WHERE ci=%s"""
     values = (ci,)
 
-    connection = DatabaseConnection()
-    cursor = connection.cursor()
-    try:
-        cursor.execute(query, values)
-        connection.commit()
-    finally:
-        cursor.close()
-        connection.close()
-
+    with DatabaseConnection() as connection:
+        cursor = connection.cursor()  # Abre el cursor
+        cursor.execute(query, values)  # Ejecuta la consulta
+        connection.commit()  # Confirma los cambios
+        cursor.close()  # Cierra el cursor
 
 def modificar_alumno(ci, datos_nuevos):
     query = """
@@ -66,24 +54,21 @@ def modificar_alumno(ci, datos_nuevos):
         ci
     )
 
-    connection = DatabaseConnection()
-    cursor = connection.cursor()
-    try:
-        cursor.execute(query, values)
-        connection.commit()
-    finally:
-        cursor.close()
-        connection.close()
+    with DatabaseConnection() as connection:
+        cursor = connection.cursor()  # Crea el cursor
+        cursor.execute(query, values)  # Ejecuta la consulta
+        connection.commit()  # Confirma los cambios
+        cursor.close()  # Cierra el cursor
 
 
 def obtener_todos_los_alumnos():
     query = """SELECT ci, nombre, apellido, fecha_nacimiento, telefono, correo_electronico FROM alumnos"""
 
-    connection = DatabaseConnection()
-    cursor = connection.cursor()
-    try:
+    with DatabaseConnection() as connection:
+        cursor = connection.cursor()  # Obtiene el cursor
         cursor.execute(query)
         alumnos = cursor.fetchall()
+        cursor.close()  # Cierra el cursor
 
         resultado = [
             {
@@ -97,6 +82,3 @@ def obtener_todos_los_alumnos():
             for ci, nombre, apellido, fecha_nacimiento, telefono, correo_electronico in alumnos
         ]
         return resultado
-    finally:
-        cursor.close()
-        connection.close()
