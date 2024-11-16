@@ -6,6 +6,7 @@ from services.login_service import registrar_usuario, autenticacion_de_usuario
 from services.actividades_service import crear_actividad, modificar_actividad, eliminar_actividad, obtener_actividades
 from services.instructor_service import agregar_instructor, eliminar_instructor, modificar_instructor, obtener_instructores
 from services.reportes_services import actividad_con_mas_ingresos, actividad_con_mas_alumnos, turno_con_mas_clases
+from services.turnos_service import crear_turno, modificar_turno, eliminar_turno, obtener_todos_los_turnos
 from datetime import datetime
 from dominio.Alumno import Alumno
 from flask import Flask, jsonify, request
@@ -274,7 +275,48 @@ def obtener_actividades_route():
     except Exception as e:
         return jsonify({'error': str(e)}), 400
 
+## Turnos
+# Ruta para crear un turno
+@app.route('/api/turnos', methods=['POST'])
+def crear_turno_route():
+    data = request.get_json()
+    hora_inicio = data.get('hora_inicio')
+    hora_fin = data.get('hora_fin')
+    try:
+        crear_turno(hora_inicio, hora_fin)
+        return jsonify({'message': 'Turno creado con éxito'}), 201
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
 
+# Ruta para modificar un turno
+@app.route('/api/turnos/<int:id>', methods=['PUT'])
+def modificar_turno_route(id):
+    data = request.get_json()
+    hora_inicio = data.get('hora_inicio')
+    hora_fin = data.get('hora_fin')
+    try:
+        modificar_turno(id, hora_inicio, hora_fin)
+        return jsonify({'message': 'Turno modificado con éxito'}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+
+# Ruta para eliminar un turno
+@app.route('/api/turnos/<int:id>', methods=['DELETE'])
+def eliminar_turno_route(id):
+    try:
+        eliminar_turno(id)
+        return jsonify({'message': 'Turno eliminado con éxito'}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+
+# Ruta para obtener todos los turnos
+@app.route('/api/turnos', methods=['GET'])
+def obtener_turnos_route():
+    try:
+        turnos = obtener_todos_los_turnos()
+        return jsonify(turnos), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
 
 
 if __name__ == '__main__':
