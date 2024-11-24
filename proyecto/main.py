@@ -3,7 +3,7 @@ from flask_cors import CORS
 from services.alumnos_service import agregar_alumno, eliminar_alumno, modificar_alumno, obtener_todos_los_alumnos
 from services.clase_service import asignar_clase, agregar_alumno_a_clase, quitar_alumno_de_clase, eliminar_clase
 from services.login_service import registrar_usuario, autenticacion_de_usuario
-from services.actividades_service import crear_actividad, modificar_actividad, eliminar_actividad, obtener_actividades
+from services.actividades_service import  modificar_actividad, obtener_actividades
 from services.instructor_service import agregar_instructor, eliminar_instructor, modificar_instructor, obtener_instructores
 from services.reportes_services import actividad_con_mas_ingresos, actividad_con_mas_alumnos, turno_con_mas_clases
 from services.turnos_service import crear_turno, modificar_turno, eliminar_turno, obtener_todos_los_turnos
@@ -115,19 +115,6 @@ def modificar_alumno_route(ci):
         return jsonify({'error': str(e)}), 400
 # Rutas para Actividades
 
-# Ruta para crear actividad
-@app.route('/api/actividades', methods=['POST'])
-def crear_actividad_route():
-    data = request.get_json()
-    descripcion = data.get('descripcion')
-    costo = data.get('costo')
-    edad_minima = data.get('edad_minima')
-    try:
-        crear_actividad(descripcion, costo, edad_minima)
-        return jsonify({'message': 'Actividad creada con éxito'}), 201
-    except Exception as e:
-        return jsonify({'error': str(e)}), 400
-
 # Ruta para modificar actividad
 @app.route('/api/actividades/<int:id>', methods=['PUT'])
 def modificar_actividad_route(id):
@@ -141,14 +128,7 @@ def modificar_actividad_route(id):
     except Exception as e:
         return jsonify({'error': str(e)}), 400
 
-# Ruta para eliminar actividad
-@app.route('/api/actividades/<int:id>', methods=['DELETE'])
-def eliminar_actividad_route(id):
-    try:
-        eliminar_actividad(id)
-        return jsonify({'message': 'Actividad eliminada con éxito'}), 200
-    except Exception as e:
-        return jsonify({'error': str(e)}), 400
+
     
 
 

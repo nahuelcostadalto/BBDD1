@@ -1,14 +1,5 @@
 from proyecto.connection import DatabaseConnection
 
-# Función para crear una actividad
-def crear_actividad(descripcion, costo, edad_minima):
-    query = "INSERT INTO actividades (descripcion, costo, edad_minima) VALUES (%s, %s, %s)"
-    values = (descripcion, costo, edad_minima)
-    with DatabaseConnection() as connection:
-        cursor = connection.cursor()  # Crea el cursor explícitamente
-        cursor.execute(query, values)
-        connection.commit()
-        cursor.close()  # Cierra el cursor manualmente
 
 # Función para modificar una actividad
 def modificar_actividad(id, nueva_descripcion, nuevo_costo, nueva_edad_minima):
@@ -20,15 +11,6 @@ def modificar_actividad(id, nueva_descripcion, nuevo_costo, nueva_edad_minima):
         connection.commit()
         cursor.close()  # Cierra el cursor manualmente
 
-# Función para eliminar una actividad
-def eliminar_actividad(id):
-    query = "DELETE FROM actividades WHERE id = %s"
-    values = (id,)
-    with DatabaseConnection() as connection:
-        cursor = connection.cursor()  # Crea el cursor explícitamente
-        cursor.execute(query, values)
-        connection.commit()
-        cursor.close()  # Cierra el cursor manualmente
 def obtener_actividades():
     query = "SELECT id, descripcion, costo, edad_minima FROM actividades"
 
