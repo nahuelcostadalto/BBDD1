@@ -139,19 +139,31 @@ def modificar_actividad_route(id):
 def crear_turno_route():
     data = request.get_json()
     try:
+        if 'hora_inicio' not in data or 'hora_fin' not in data:
+            raise ValueError("Los campos 'hora_inicio' y 'hora_fin' son obligatorios.")
+
         crear_turno(data['hora_inicio'], data['hora_fin'])
         return jsonify({'message': 'Turno creado con éxito'}), 201
+    except ValueError as ve:
+        return jsonify({'error': str(ve)}), 400
     except Exception as e:
-        return jsonify({'error': str(e)}), 400
+        return jsonify({'error': 'Error interno al crear turno: ' + str(e)}), 500
+
 
 @app.route('/api/turnos/<int:id>', methods=['PUT'])
 def modificar_turno_route(id):
     data = request.get_json()
     try:
+        if 'hora_inicio' not in data or 'hora_fin' not in data:
+            raise ValueError("Los campos 'hora_inicio' y 'hora_fin' son obligatorios.")
+
         modificar_turno(id, data['hora_inicio'], data['hora_fin'])
         return jsonify({'message': 'Turno modificado con éxito'}), 200
+    except ValueError as ve:
+        return jsonify({'error': str(ve)}), 400
     except Exception as e:
-        return jsonify({'error': str(e)}), 400
+        return jsonify({'error': 'Error interno al modificar turno: ' + str(e)}), 500
+
 
 @app.route('/api/turnos/<int:id>', methods=['DELETE'])
 def eliminar_turno_route(id):
@@ -159,7 +171,8 @@ def eliminar_turno_route(id):
         eliminar_turno(id)
         return jsonify({'message': 'Turno eliminado con éxito'}), 200
     except Exception as e:
-        return jsonify({'error': str(e)}), 400
+        return jsonify({'error': 'Error interno al eliminar turno: ' + str(e)}), 500
+
 
 @app.route('/api/turnos', methods=['GET'])
 def obtener_turnos_route():
@@ -167,7 +180,7 @@ def obtener_turnos_route():
         turnos = obtener_todos_los_turnos()
         return jsonify(turnos), 200
     except Exception as e:
-        return jsonify({'error': str(e)}), 400
+        return jsonify({'error': 'Error interno al obtener turnos: ' + str(e)}), 500
 
 # ----------------------------- CLASES ---------------------------------
 @app.route('/api/clases', methods=['GET'])
