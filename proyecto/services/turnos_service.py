@@ -4,13 +4,16 @@ from proyecto.connection import DatabaseConnection
 # Función para validar y convertir horas
 def convertir_hora(hora):
     """
-    Convierte una hora en formato HH:MM a un objeto time.
+    Convierte una hora en formato HH:MM:SS o HH:MM a un objeto time.
     Lanza un ValueError si el formato no es válido.
     """
-    try:
-        return datetime.strptime(hora, "%H:%M").time()
-    except ValueError as e:
-        raise ValueError(f"Formato de hora no válido: {hora}. Debe ser HH:MM.") from e
+    formatos = ["%H:%M:%S", "%H:%M"]  # Permitir ambos formatos
+    for formato in formatos:
+        try:
+            return datetime.strptime(hora, formato).time()
+        except ValueError:
+            continue  # Intentar con el siguiente formato
+    raise ValueError(f"Formato de hora no válido: {hora}. Debe ser HH:MM:SS o HH:MM.")
 
 # Crear turno
 def crear_turno(hora_inicio, hora_fin):
@@ -59,8 +62,9 @@ def obtener_todos_los_turnos():
         resultado = [
             {
                 "id": id,
-                "hora_inicio": hora_inicio.strftime("%H:%M") if isinstance(hora_inicio, time) else str(hora_inicio),
-                "hora_fin": hora_fin.strftime("%H:%M") if isinstance(hora_fin, time) else str(hora_fin)
+                # Formatear las horas con segundos
+                "hora_inicio": hora_inicio.strftime("%H:%M:%S") if isinstance(hora_inicio, time) else str(hora_inicio),
+                "hora_fin": hora_fin.strftime("%H:%M:%S") if isinstance(hora_fin, time) else str(hora_fin)
             }
             for id, hora_inicio, hora_fin in turnos
         ]
