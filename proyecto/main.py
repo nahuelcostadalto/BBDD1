@@ -1,207 +1,324 @@
-#from services.alumnos_service import agregar_alumno
-#from services.clase_service import asignar_clase, agregar_alumno_a_clase
-#from services.login_service import registrar_usuario, autenticacion_de_usuario
-#from datetime import datetime
-#from flask import Flask, jsonify, request
-
-
-# Convertir `fecha_nacimiento` a `datetime.date`
-#fecha_nacimiento = datetime.strptime("2000-01-01", "%Y-%m-%d").date()
-
-
-#try:
-    # Usar `fecha_nacimiento` convertido
-    #agregar_alumno("12346679", "Juan", "Perez", fecha_nacimiento, "099123456", "jufan@correo.com")
-
-#    print("Alumno agregado correctamente")
-
-#except ValueError as e:
-
- #   print(f"Error: {e}")
-from services.alumnos_service import agregar_alumno, eliminar_alumno, modificar_alumno
-from services.clase_service import asignar_clase, agregar_alumno_a_clase, quitar_alumno_de_clase, crear_clase, eliminar_clase
-from services.instructor_service import agregar_instructor, eliminar_instructor, modificar_instructor
-from services.login_service import registrar_usuario, autenticacion_de_usuario
-from services.actividades_service import crear_actividad, modificar_actividad, eliminar_actividad
-from services.turnos_service import crear_turno, modificar_turno, eliminar_turno
-from dominio.Alumno import Alumno
-from services.reportes_services import actividad_con_mas_ingresos, actividad_con_mas_alumnos, turno_con_mas_clases
-
+from flask import Flask, jsonify, request
+from flask_cors import CORS
 from datetime import datetime
 
-def probar_funcionalidades():
-    # Pruebas de Alumno
-    # print("\n--- Pruebas de Alumno ---")
-    # alumno = Alumno(ci="50345344", nombre="Nahuel", apellido="Costa", fecha_nacimiento="1998-03-20", telefono="098476546", correo_electronico="nahuel.costa@hotmail.com")
-    # try:
-    #     agregar_alumno(alumno)#Crear alumno?
-    #     print("Alumno agregado correctamente.")
-    # except Exception as e:
-    #     print(f"Error al agregar alumno: {e}")
+# Importación de servicios
+from services.alumnos_service import agregar_alumno, eliminar_alumno, modificar_alumno, obtener_todos_los_alumnos
+from services.clase_service import asignar_clase, agregar_alumno_a_clase, quitar_alumno_de_clase, eliminar_clase, obtener_clases,actualizar_dictada, crear_clase
+from services.login_service import registrar_usuario, autenticacion_de_usuario
+from services.actividades_service import modificar_actividad, obtener_actividades
+from services.instructor_service import agregar_instructor, eliminar_instructor, modificar_instructor, obtener_instructores
+from services.reportes_services import actividad_con_mas_ingresos, actividad_con_mas_alumnos, turno_con_mas_clases
+from services.turnos_service import crear_turno, modificar_turno, eliminar_turno, obtener_todos_los_turnos
+from services.equipamiento_service import crear_equipamiento, eliminar_equipamiento, modificar_equipamiento, obtener_equipamientos
+from dominio.Alumno import Alumno
 
-    # try:
-    #     modificar_alumno("50345344", {"nombre": "NoSoyNahuel", "apellido": "Inventado", "fecha_nacimiento": "2000-01-01", "telefono": "099654321", "correo_electronico": "Nosoynahuel@hotmail.com"})
-    #     print("Alumno modificado correctamente.")
-    # except Exception as e:
-    #     print(f"Error al modificar alumno: {e}")
+# Configuración de la aplicación Flask
+app = Flask(__name__)
+CORS(app)
 
-#    try:
-#        eliminar_alumno("50345344")
-#        print("Alumno eliminado correctamente.")
-#    except Exception as e:
-#        print(f"Error al eliminar alumno: {e}")
+# ----------------------------- USUARIOS ---------------------------------
+@app.route('/api/usuarios', methods=['POST'])
+def registrar_usuario_route():
+    data = request.get_json()
+    correo = data.get('correo')
+    contraseña = data.get('contraseña')
+    try:
+        registrar_usuario(correo, contraseña)
+        return jsonify({'message': 'Usuario registrado con éxito'}), 201
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
 
-    # Pruebas de Actividades
-    # # # #la id de la actividad es autoincremental, tendríamos que cambiarlo tambien
-    # print("\n--- Pruebas de Actividades ---")
-    # try:
-    #     crear_actividad("Actividad de prueba con más alumnos", 500, 15)
-    #     print("Actividad creada correctamente.")
-    # except Exception as e:
-    #     print(f"Error al crear actividad: {e}")
+@app.route('/api/usuarios/login', methods=['POST'])
+def login_usuario():
+    data = request.get_json()
+    correo = data.get('correo')
+    contraseña = data.get('contraseña')
+    if autenticacion_de_usuario(correo, contraseña):
+        return jsonify({'message': 'Autenticación exitosa'}), 200
+    else:
+        return jsonify({'error': 'Credenciales incorrectas'}), 401
 
-    # try:
-    #     modificar_actividad(1, "Actividad Random actualizada", 700, 18)
-    #     print("Actividad modificada correctamente.")
-    # except Exception as e:
-    #     print(f"Error al modificar actividad: {e}")
+# ----------------------------- ALUMNOS ---------------------------------
+@app.route('/api/alumnos', methods=['POST'])
+def agregar_alumno_route():
+    data = request.get_json()
+    try:
+        alumno = Alumno(**data)
+        agregar_alumno(alumno)
+        return jsonify({'message': 'Alumno agregado con éxito'}), 201
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
 
-#    try:
-#        eliminar_actividad(1)
-#        print("Actividad eliminada correctamente.")
-#    except Exception as e:
-#        print(f"Error al eliminar actividad: {e}")
+@app.route('/api/alumnos/<ci>', methods=['DELETE'])
+def eliminar_alumno_route(ci):
+    try:
+        eliminar_alumno(ci)
+        return jsonify({'message': 'Alumno eliminado con éxito'}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
 
-    # # Pruebas de Clases
-    # print("\n--- Pruebas de Clases ---")
-    # try:
-    #     #Crear clase da error Error al crear clase: 1054 (42S22): Unknown column 'es_grupal' in 'field list' chequear en la bbdd si tengo creada esa columna
-    #     crear_clase("12345678", 23, 1) #para que esto funcione primero tengo que crear el instructor y la actividad y el turno
-    # #     #FUNCIONA
-    #     print("Clase creada correctamente.")
-    # except Exception as e:
-    #     print(f"Error al crear clase: {e}")
+@app.route('/api/alumnos', methods=['GET'])
+def obtener_alumnos_route():
+    try:
+        alumnos = obtener_todos_los_alumnos()
+        return jsonify(alumnos), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
 
-    # try:
-    #     #FUNCIONA
-    #     asignar_clase("50247454", 2, 1) #los atributos son i_instructor, id_actividad, id_turno
-    #     print("Clase asignada correctamente.")
-    # except Exception as e:
-    #     print(f"Error al asignar clase: {e}")
-    #Agregar alumno me está dando el siguiente error Error al agregar alumno a la clase: 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`Obligatorio1`.`alumno_clase`, CONSTRAINT `alumno_clase_ibfk_1` FOREIGN KEY (`id_clase`) REFERENCES `clase` (`id`) ON DELETE CASCADE)
-    # try:
-    #     agregar_alumno_a_clase(42, "12346679")
-    #     agregar_alumno_a_clase(42, "12347448")
-    #     agregar_alumno_a_clase(42, "12387448")
-    #     agregar_alumno_a_clase(42, "50345344")
-    #     agregar_alumno_a_clase(42, "12345678")
-    #     print("Alumno agregado a la clase correctamente.")#no le tendriamos que poner nombre a la clase para que quede más entendible?
-    # except Exception as e:
-    #     print(f"Error al agregar alumno a la clase: {e}")
+@app.route('/api/alumnos/<ci>', methods=['PUT'])
+def modificar_alumno_route(ci):
+    data = request.get_json()
+    try:
+        datos_nuevos = {
+            "nombre": data.get('nombre'),
+            "apellido": data.get('apellido'),
+            "fecha_nacimiento": data.get('fecha_nacimiento'),
+            "telefono": data.get('telefono'),
+            "correo_electronico": data.get('correo_electronico')
+        }
+        modificar_alumno(ci, datos_nuevos)
+        return jsonify({'message': 'Alumno modificado con éxito'}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
 
-#    try:
-#        quitar_alumno_de_clase(1, "50345344")
-#        print("Alumno quitado de la clase correctamente.")
-#    except Exception as e:
-#        print(f"Error al quitar alumno de la clase: {e}")
+# ----------------------------- INSTRUCTORES ---------------------------------
+@app.route('/api/instructores', methods=['POST'])
+def agregar_instructor_route():
+    data = request.get_json()
+    try:
+        agregar_instructor(data['ci'], data['nombre'], data['apellido'])
+        return jsonify({'message': 'Instructor agregado con éxito'}), 201
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
 
-#    try:
-#        eliminar_clase(1)
-#        print("Clase eliminada correctamente.")
-#    except Exception as e:
-#        print(f"Error al eliminar clase: {e}")
+@app.route('/api/instructores/<ci>', methods=['DELETE'])
+def eliminar_instructor_route(ci):
+    try:
+        eliminar_instructor(ci)
+        return jsonify({'message': 'Instructor eliminado con éxito'}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
 
-    # Pruebas de Instructores
+@app.route('/api/instructores/<ci>', methods=['PUT'])
+def modificar_instructor_route(ci):
+    data = request.get_json()
+    try:
+        modificar_instructor(ci, {'nombre': data['nombre'], 'apellido': data['apellido']})
+        return jsonify({'message': 'Instructor modificado con éxito'}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
 
-    # print("-------------------------Prueba de turnos")
+@app.route('/api/instructores', methods=['GET'])
+def obtener_instructores_route():
+    try:
+        instructores = obtener_instructores()
+        return jsonify(instructores), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
 
-    # try:
-    #     crear_turno("18:00", "20:00")
-    #     print("Turno creado correctamente.")
-    # except Exception as e:
-    #     print(f"Error al crear turno: {e}")
+# ----------------------------- ACTIVIDADES ---------------------------------
+@app.route('/api/actividades', methods=['GET'])
+def obtener_actividades_route():
+    try:
+        actividades = obtener_actividades()
+        return jsonify(actividades), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
 
-    # try:
-    #     modificar_turno(5, "18:00", "23:00")
-    #     print("Turno modificado correctamente.")
-    # except Exception as e:
-    #     print(f"Error al modificar turno: {e}")
-#    try:
-#        eliminar_turno(1)
-#        print("Turno eliminado correctamente.")
-#    except Exception as e:
-#        print(f"Error al eliminar turno: {e}")
+@app.route('/api/actividades/<int:id>', methods=['PUT'])
+def modificar_actividad_route(id):
+    data = request.get_json()
+    try:
+        modificar_actividad(id, data.get('descripcion'), data.get('costo'), data.get('edad_minima'))
+        return jsonify({'message': 'Actividad modificada con éxito'}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
 
+# ----------------------------- TURNOS ---------------------------------
+@app.route('/api/turnos', methods=['POST'])
+def crear_turno_route():
+    data = request.get_json()
+    try:
+        if 'hora_inicio' not in data or 'hora_fin' not in data:
+            raise ValueError("Los campos 'hora_inicio' y 'hora_fin' son obligatorios.")
 
-    # print("\n--- Pruebas de Instructores ---")
-    # try:
-    #     agregar_instructor("12345678", "Profe", "prueba con más alumnos")
-    #     print("Instructor agregado correctamente.")
-    # except Exception as e:
-    #     print(f"Error al agregar instructor: {e}")
-
-    # try:
-    #     modificar_instructor("50247454", {"nombre": "ProfeRandom", "apellido": "Modificado"})
-    #     print("Instructor modificado correctamente.")
-    # except Exception as e:
-    #     print(f"Error al modificar instructor: {e}")
-
-#    try:
-#        eliminar_instructor("50247454")
-#        print("Instructor eliminado correctamente.")
-#    except Exception as e:
-#        print(f"Error al eliminar instructor: {e}")
-
-    # Pruebas de Usuarios
-    # print("\n--- Pruebas de Usuarios ---")
-    # try:
-    #     registrar_usuario("pruebaregistro@correo.com", "password123")
-    #     print("Usuario registrado correctamente.")
-    # except Exception as e:
-    #     print(f"Error al registrar usuario: {e}")
-
-    # try:
-    #     autenticado = autenticacion_de_usuario("pruebaregistro@correo.com", "password123")
-    #     if autenticado:
-    #         print("Usuario autenticado correctamente.")
-    #     else:
-    #         print("Error en la autenticación de usuario.")
-    # except Exception as e:
-    #     print(f"Error al autenticar usuario: {e}")
+        crear_turno(data['hora_inicio'], data['hora_fin'])
+        return jsonify({'message': 'Turno creado con éxito'}), 201
+    except ValueError as ve:
+        return jsonify({'error': str(ve)}), 400
+    except Exception as e:
+        return jsonify({'error': 'Error interno al crear turno: ' + str(e)}), 500
 
 
-    # print("\n--- Pruebas de Reportes ---")
+@app.route('/api/turnos/<int:id>', methods=['PUT'])
+def modificar_turno_route(id):
+    data = request.get_json()
+    try:
+        if 'hora_inicio' not in data or 'hora_fin' not in data:
+            raise ValueError("Los campos 'hora_inicio' y 'hora_fin' son obligatorios.")
+
+        modificar_turno(id, data['hora_inicio'], data['hora_fin'])
+        return jsonify({'message': 'Turno modificado con éxito'}), 200
+    except ValueError as ve:
+        return jsonify({'error': str(ve)}), 400
+    except Exception as e:
+        return jsonify({'error': 'Error interno al modificar turno: ' + str(e)}), 500
 
 
-    # try:
-    #     actividad = actividad_con_mas_ingresos()
-    #     print(f"Actividad con más ingresos: {actividad}")
-    # except Exception as e:
-    #     print(f"Error al obtener actividad con más ingresos: {e}")
-    # #Funciona
-    # # try:
-    # #     actividad = actividad_con_mas_alumnos()
-    # #     print(f"Actividad con más alumnos: {actividad}")
-    # except Exception as e:
-    #     print(f"Error al obtener actividad con más alumnos: {e}")
+@app.route('/api/turnos/<int:id>', methods=['DELETE'])
+def eliminar_turno_route(id):
+    try:
+        eliminar_turno(id)
+        return jsonify({'message': 'Turno eliminado con éxito'}), 200
+    except Exception as e:
+        return jsonify({'error': 'Error interno al eliminar turno: ' + str(e)}), 500
 
-#Esta funcion sacarla de acá y moverla a reportes_services.py y cambiarle el nombre a convertir_timedelta_a_hora , esto sucede porque cuando llamo a turno_con_mas_clases() me devuelve un timedelta y no un string
-#y para que se vea correctamente la hora tengo que convertirlo a string con esta funcion.
-    # def convertir_timedelta_a_hora(timedelta_obj):
-    #     horas = timedelta_obj.seconds // 3600
-    #     minutos = (timedelta_obj.seconds // 60) % 60
-    #     return f"{horas:02d}:{minutos:02d}"
-    # print("\n--- Pruebas de Reportes ---")
-    # try:
-    #     turno = turno_con_mas_clases()
-    #     if turno:
-    #         hora_inicio, hora_fin, total_clases = turno
-    #         hora_inicio_str = convertir_timedelta_a_hora(hora_inicio)
-    #         hora_fin_str = convertir_timedelta_a_hora(hora_fin)
-    #         print(f"Turno con más clases: Inicio {hora_inicio_str}, Fin {hora_fin_str}, Total de clases: {total_clases}")
-    #     else:
-    #         print("No se encontró ningún turno con clases.")
-    # except Exception as e:
-    #     print(f"Error al obtener turno con más clases: {e}")
-# if __name__ == "__main__":
-    probar_funcionalidades()
+
+@app.route('/api/turnos', methods=['GET'])
+def obtener_turnos_route():
+    try:
+        turnos = obtener_todos_los_turnos()
+        return jsonify(turnos), 200
+    except Exception as e:
+        return jsonify({'error': 'Error interno al obtener turnos: ' + str(e)}), 500
+
+# ----------------------------- CLASES ---------------------------------
+@app.route('/api/clases', methods=['GET'])
+def obtener_clases_route():
+    try:
+        clases = obtener_clases()
+        return jsonify(clases), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+
+
+@app.route('/api/clases/asignar', methods=['POST'])
+def asignar_clase_route():
+    data = request.get_json()
+    try:
+        asignar_clase(data['ci_instructor'], data['id_actividad'], data['id_turno'])
+        return jsonify({'message': 'Clase asignada con éxito'}), 201
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+
+
+@app.route('/api/clases/agregar-alumno', methods=['POST'])
+def agregar_alumno_a_clase_route():
+    data = request.get_json()
+    try:
+        agregar_alumno_a_clase(data['id_clase'], data['ci_alumno'], data.get('id_equipamiento'))
+        return jsonify({'message': 'Alumno agregado a la clase con éxito'}), 201
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+
+
+@app.route('/api/clases/quitar-alumno', methods=['POST'])
+def quitar_alumno_de_clase_route():
+    data = request.get_json()
+    try:
+        quitar_alumno_de_clase(data['id_clase'], data['ci_alumno'])
+        return jsonify({'message': 'Alumno quitado de la clase con éxito'}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+
+
+@app.route('/api/clases', methods=['POST'])
+def crear_clase_route():
+    data = request.get_json()
+    try:
+        crear_clase(data['ci_instructor'], data['id_actividad'], data['id_turno'])
+        return jsonify({'message': 'Clase creada con éxito'}), 201
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+
+
+@app.route('/api/clases/<int:id>', methods=['DELETE'])
+def eliminar_clase_route(id):
+    try:
+        eliminar_clase(id)  # Llamar con `id`
+        return jsonify({'message': 'Clase eliminada con éxito'}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+
+
+@app.route('/api/clases/dictada/<int:id>', methods=['PUT'])
+def actualizar_dictada_route(id):
+    data = request.get_json()
+    print("Datos recibidos en actualizar_dictada_route:", data)  # Log para depuración
+    try:
+        dictada = data.get('dictada', False)  # Por defecto será False si no se pasa
+        print(f"Actualizando dictada para clase {id} a {dictada}")
+        actualizar_dictada(id, dictada)
+        return jsonify({'message': 'Estado de dictada actualizado con éxito'}), 200
+    except Exception as e:
+        print("Error en actualizar_dictada_route:", str(e))  # Log para depuración
+        return jsonify({'error': str(e)}), 400
+# ----------------------------- REPORTES ---------------------------------
+@app.route('/api/reportes/actividad-mas-ingresos', methods=['GET'])
+def get_actividad_mas_ingresos():
+    try:
+        result = actividad_con_mas_ingresos()
+        return jsonify(result), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+
+@app.route('/api/reportes/actividad-mas-alumnos', methods=['GET'])
+def get_actividad_mas_alumnos():
+    try:
+        result = actividad_con_mas_alumnos()
+        return jsonify(result), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+
+@app.route('/api/reportes/turno-mas-clases', methods=['GET'])
+def get_turno_mas_clases():
+    try:
+        result = turno_con_mas_clases()
+        return jsonify(result), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+
+
+# ----------------------------- EQUIPAMIENTO ---------------------------------
+@app.route('/api/equipamientos', methods=['POST'])
+def route_crear_equipamiento():
+    try:
+        data = request.json
+        crear_equipamiento(data['nombre'], data['descripcion'], data['costo'])
+        return jsonify({"message": "Equipamiento creado correctamente"}), 201
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+
+@app.route('/api/equipamientos/<int:id>', methods=['DELETE'])
+def route_eliminar_equipamiento(id):
+    try:
+        eliminar_equipamiento(id)
+        return jsonify({"message": "Equipamiento eliminado correctamente"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+
+@app.route('/api/equipamientos/<int:id>', methods=['PUT'])
+def route_modificar_equipamiento(id):
+    try:
+        data = request.json
+        modificar_equipamiento(id, data['nombre'], data['descripcion'], data['costo'])
+        return jsonify({"message": "Equipamiento modificado correctamente"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+
+@app.route('/api/equipamientos', methods=['GET'])
+def route_obtener_equipamientos():
+    try:
+        equipamientos = obtener_equipamientos()
+        return jsonify(equipamientos), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+
+# ----------------------------- MAIN ---------------------------------
+if __name__ == '__main__':
+    app.run(debug=True)

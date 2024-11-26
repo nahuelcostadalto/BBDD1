@@ -1,17 +1,10 @@
-from connection import DatabaseConnection
-from dominio import Alumno
-from utils.validators import validar_email
+from proyecto.connection import DatabaseConnection
+from proyecto.dominio import Alumno
+from proyecto.utils.validators import validar_email
 
-#Tenemos Agregar Alumno, el cual agrega un alumno a la tabla alumnos de la base de datos.
-#Tenemos Eliminar Alumno, el cual elimina un alumno de la tabla alumnos de la base de datos.
-#Tenemos modificar Alumno, el cual modifica los datos de un alumno en la tabla alumnos de la base de datos.
-#Es decir ya tenemos el ABM de alumnos completo.
 def agregar_alumno(alumno):
-
-    # Validar correo electrónico
     if not validar_email(alumno.correo_electronico):
         raise ValueError("Correo electrónico inválido")
-
     if not alumno.es_mayor_de_edad():
         raise ValueError("El alumno debe ser mayor de edad")
 
@@ -25,28 +18,83 @@ def agregar_alumno(alumno):
         alumno.apellido,
         alumno.fecha_nacimiento,
         alumno.telefono,
-        alumno.correo_electronico
+        alumno.correo_electronico,
     )
- 
-    with DatabaseConnection() as connection:
-        with connection.cursor() as cursor:
+
+    try:
+        with DatabaseConnection() as connection:
+            cursor = connection.cursor()  # Crea el cursor manualmente
             cursor.execute(query, values)
             connection.commit()
+            cursor.close()  # Cierra el cursor manualmente
+    except Exception as e:
+        print(f"Error en agregar_alumno: {e}")
+        raise
+
 
 def eliminar_alumno(ci):
     query = """DELETE FROM alumnos WHERE ci=%s"""
     values = (ci,)
 
-    with DatabaseConnection() as connection:
-        with connection.cursor() as cursor:
+    try:
+        with DatabaseConnection() as connection:
+            cursor = connection.cursor()  # Crea el cursor manualmente
             cursor.execute(query, values)
             connection.commit()
+            cursor.close()  # Cierra el cursor manualmente
+    except Exception as e:
+        print(f"Error en eliminar_alumno: {e}")
+        raise
 
-def modificar_alumno(ci,datos_nuevos):
-    query = """UPDATE alumnos SET nombre=%s, apellido=%s, fecha_nacimiento=%s, telefono=%s, correo_electronico=%s WHERE ci=%s"""
-    values = (datos_nuevos["nombre"],datos_nuevos["apellido"],datos_nuevos["fecha_nacimiento"],datos_nuevos["telefono"],datos_nuevos["correo_electronico"],ci)
 
-    with DatabaseConnection() as connection:
-        with connection.cursor() as cursor:
+def modificar_alumno(ci, datos_nuevos):
+    query = """
+        UPDATE alumnos 
+        SET nombre=%s, apellido=%s, fecha_nacimiento=%s, telefono=%s, correo_electronico=%s 
+        WHERE ci=%s
+    """
+    values = (
+        datos_nuevos["nombre"],
+        datos_nuevos["apellido"],
+        datos_nuevos["fecha_nacimiento"],
+        datos_nuevos["telefono"],
+        datos_nuevos["correo_electronico"],
+        ci,
+    )
+
+    try:
+        with DatabaseConnection() as connection:
+            cursor = connection.cursor()  # Crea el cursor manualmente
             cursor.execute(query, values)
             connection.commit()
+            cursor.close()  # Cierra el cursor manualmente
+    except Exception as e:
+        print(f"Error en modificar_alumno: {e}")
+        raise
+
+
+def obtener_todos_los_alumnos():
+    query = """SELECT ci, nombre, apellido, fecha_nacimiento, telefono, correo_electronico FROM alumnos"""
+
+    try:
+        with DatabaseConnection() as connection:
+            cursor = connection.cursor()  # Crea el cursor manualmente
+            cursor.execute(query)
+            alumnos = cursor.fetchall()
+            cursor.close()  # Cierra el cursor manualmente
+    except Exception as e:
+        print(f"Error en obtener_todos_los_alumnos: {e}")
+        raise
+
+    resultado = [
+        {
+            "ci": ci,
+            "nombre": nombre,
+            "apellido": apellido,
+            "fecha_nacimiento": fecha_nacimiento,
+            "telefono": telefono,
+            "correo_electronico": correo_electronico,
+        }
+        for ci, nombre, apellido, fecha_nacimiento, telefono, correo_electronico in alumnos
+    ]
+    return resultado

@@ -1,4 +1,4 @@
-from connection import DatabaseConnection
+from proyecto.connection import DatabaseConnection
 def registrar_usuario(correo,contraseña): #Función que registra un usuario en la base de datos con su correo y contraseña, autenticacion de usuario
     query="""INSERT INTO login (correo,contraseña) VALUES (%s,%s)"""
     values=(correo,contraseña)

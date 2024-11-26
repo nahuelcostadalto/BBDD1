@@ -1,7 +1,7 @@
 from datetime import datetime, date
-#class Alumno sir
-def convertir_fecha(fecha_nacimiento): #sacar esta def de la clase
-    print("fechiña")
+
+def convertir_fecha(fecha_nacimiento): #sacar esta def de la clase para que solo me quede la clase alumno.
+    
     if isinstance(fecha_nacimiento, str):
         return datetime.strptime(fecha_nacimiento, "%Y-%m-%d").date()
     elif isinstance(fecha_nacimiento, date):
@@ -9,7 +9,7 @@ def convertir_fecha(fecha_nacimiento): #sacar esta def de la clase
     else:
         raise ValueError("fecha_nacimiento debe ser una cadena en formato 'YYYY-MM-DD' o un objeto date")
 
-class Alumno: #nunca se crea el objeto ya que no entra al Alumno=alimno
+class Alumno: 
     def __init__(self, ci, nombre, apellido, fecha_nacimiento, telefono, correo_electronico):
         
         self.ci = ci
