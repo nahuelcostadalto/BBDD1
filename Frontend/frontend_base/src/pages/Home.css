@@ -1,0 +1,70 @@
+/* General container styling */
+.page-container {
+    max-width: 800px; /* Limita el ancho del contenido */
+    width: 90%;
+    margin: auto;
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center; /* Centra el texto */
+}
+
+/* Títulos */
+.page-title {
+    margin-bottom: 10px;
+    color: #333;
+    font-size: 2rem;
+}
+
+.subtitulo {
+    margin-bottom: 30px;
+    color: #666;
+    font-size: 1.2rem;
+}
+
+/* Botón styling */
+.button-container {
+    display: flex;
+    flex-direction: column; /* Alinea botones en columna */
+    align-items: center;
+    gap: 15px; /* Espaciado entre botones */
+}
+
+button {
+    background-color: #f08626;
+    border: none;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-size: 16px;
+    width: 80%; /* Botones más anchos */
+    max-width: 400px; /* Limita el tamaño del botón */
+}
+
+button:hover {
+    background-color: #d4741f;
+}
+
+button:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(240, 134, 38, 0.5);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .page-title {
+        font-size: 1.5rem;
+    }
+
+    .subtitulo {
+        font-size: 1rem;
+    }
+
+    button {
+        font-size: 14px;
+        padding: 10px 20px;
+    }
+}

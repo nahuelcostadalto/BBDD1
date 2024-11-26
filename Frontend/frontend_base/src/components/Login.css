@@ -1,0 +1,102 @@
+/* General container styling */
+.login-container {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 2rem;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Título del login */
+.login-container h2 {
+  font-size: 2rem;
+  color: #333;
+  margin-bottom: 1.5rem;
+}
+
+/* Estiliza el formulario */
+.login-container form {
+  width: 100%; /* Asegura que el formulario ocupe todo el ancho del contenedor */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem; /* Espaciado entre los elementos */
+}
+
+/* Etiquetas */
+.login-container form label {
+  width: 100%; /* Ocupa el ancho completo del formulario */
+  text-align: left; /* Alinea las etiquetas a la izquierda */
+  font-size: 1rem;
+  color: #555;
+}
+
+/* Inputs */
+.login-container form input {
+  width: 100%; /* Asegura que todos los inputs tengan el mismo ancho */
+  max-width: 350px; /* Limita el tamaño máximo */
+  padding: 0.7rem;
+  font-size: 1rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  transition: border-color 0.3s;
+}
+
+.login-container form input:focus {
+  border-color: #f08626;
+  outline: none;
+  box-shadow: 0 0 5px rgba(240, 134, 38, 0.3);
+}
+
+/* Botón de login */
+.login-container button {
+  width: 100%; /* Botón del mismo ancho que los inputs */
+  max-width: 350px;
+  padding: 0.7rem;
+  font-size: 1rem;
+  background-color: #f08626;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.login-container button:hover {
+  background-color: #e0751f;
+}
+
+.login-container button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(240, 134, 38, 0.5);
+}
+
+/* Mensaje de error */
+.error-message {
+  color: red;
+  font-size: 0.9rem;
+  margin-top: -0.5rem;
+  margin-bottom: 1rem;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .login-container {
+    padding: 1.5rem;
+  }
+
+  .login-container h2 {
+    font-size: 1.5rem;
+  }
+
+  .login-container form input,
+  .login-container button {
+    font-size: 0.9rem;
+    padding: 0.5rem;
+  }
+}
