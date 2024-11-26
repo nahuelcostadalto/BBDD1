@@ -10,6 +10,7 @@ from services.actividades_service import modificar_actividad, obtener_actividade
 from services.instructor_service import agregar_instructor, eliminar_instructor, modificar_instructor, obtener_instructores
 from services.reportes_services import actividad_con_mas_ingresos, actividad_con_mas_alumnos, turno_con_mas_clases
 from services.turnos_service import crear_turno, modificar_turno, eliminar_turno, obtener_todos_los_turnos
+from services.equipamiento_service import crear_equipamiento, eliminar_equipamiento, modificar_equipamiento, obtener_equipamientos
 from dominio.Alumno import Alumno
 
 # Configuración de la aplicación Flask
@@ -278,6 +279,44 @@ def get_turno_mas_clases():
     except Exception as e:
         return jsonify({'error': str(e)}), 400
 
+
+# ----------------------------- EQUIPAMIENTO ---------------------------------
+@app.route('/api/equipamientos', methods=['POST'])
+def route_crear_equipamiento():
+    try:
+        data = request.json
+        crear_equipamiento(data['nombre'], data['descripcion'], data['costo'])
+        return jsonify({"message": "Equipamiento creado correctamente"}), 201
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+
+@app.route('/api/equipamientos/<int:id>', methods=['DELETE'])
+def route_eliminar_equipamiento(id):
+    try:
+        eliminar_equipamiento(id)
+        return jsonify({"message": "Equipamiento eliminado correctamente"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+
+@app.route('/api/equipamientos/<int:id>', methods=['PUT'])
+def route_modificar_equipamiento(id):
+    try:
+        data = request.json
+        modificar_equipamiento(id, data['nombre'], data['descripcion'], data['costo'])
+        return jsonify({"message": "Equipamiento modificado correctamente"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+
+@app.route('/api/equipamientos', methods=['GET'])
+def route_obtener_equipamientos():
+    try:
+        equipamientos = obtener_equipamientos()
+        return jsonify(equipamientos), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
 
 
 # ----------------------------- MAIN ---------------------------------
