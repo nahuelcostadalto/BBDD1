@@ -1,0 +1,192 @@
+/* General styles */
+body {
+    margin: 0;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    background-color: #f7f7f7;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+/* Container styling */
+.container {
+    max-width: 1200px;
+    width: 100%;
+    margin: auto;
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Headings */
+h1, h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-weight: 600;
+    color: #444;
+}
+.formulario {
+    display: flex;
+    flex-direction: column; /* Coloca los elementos en una columna */
+    align-items: center; /* Centra horizontalmente los elementos */
+    justify-content: center; /* Centra verticalmente los elementos */
+    gap: 10px; /* Espaciado entre los inputs */
+    margin: 20px 0;
+}
+/* Form inputs */
+input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: border-color 0.3s;
+}
+
+input:focus {
+    border-color: #f08626;
+    outline: none;
+}
+
+/* Buttons */
+
+.boton-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+button {
+    background-color: #f08626;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    margin-top: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 14px;
+    width: auto; /* Cambiado para que el botón se ajuste al texto */
+}
+
+button:hover {
+    background-color: #d4741f;
+}
+.volver {
+    background-color: #f08626;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.volver:hover {
+    background-color: #d4741f;
+}
+button:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(240, 134, 38, 0.5);
+}
+/* Table styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-size: 14px;
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+thead {
+    background-color: #f08626;
+    color: white;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+th, td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+tbody tr:hover {
+    background-color: #f9f9f9;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+td:last-child {
+    display: flex;
+    gap: 10px;
+}
+
+td:last-child button {
+    width: auto;
+    padding: 5px 10px;
+    font-size: 12px;
+}
+
+/* Messages */
+.mensaje {
+    text-align: center;
+    color: green;
+    margin: 10px 0;
+    font-size: 14px;
+}
+/* Select styling */
+select {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    background-color: white;
+    appearance: none; /* Eliminar la flecha por defecto */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='none' d='M0 0h20v20H0z'/%3E%3Cpath fill='%23f08626' d='M10 12l-5-5h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 10px;
+}
+
+select:focus {
+    border-color: #f08626;
+    box-shadow: 0 0 0 3px rgba(240, 134, 38, 0.3);
+    outline: none;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    select {
+        font-size: 12px;
+    }
+    table {
+        font-size: 12px;
+    }
+
+    th, td {
+        padding: 10px;
+    }
+
+    td:last-child {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    td:last-child button {
+        width: 100%;
+    }
+}
